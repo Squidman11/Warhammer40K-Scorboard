@@ -1,0 +1,10 @@
+{
+  "name": "Warhammer 40k Match Scoreboard Tracker",
+  "short_name": "WH40k Scoreboard",
+  "description": "Premium full-screen state-persisted scoreboard app for Warhammer 40k 10th Edition",
+  "start_url": "index.html",
+  "display": "standalone",
+  "background_color": "#0f1115",
+  "theme_color": "#c59b27",
+  "orientation": "any"
+}

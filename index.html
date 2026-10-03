@@ -1,0 +1,101 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Warhammer 40k Match Scoreboard Tracker</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+    <!-- Unified Header Block -->
+    <header>
+        <h1>Warhammer 40k Scoreboard</h1>
+        
+        <div class="header-controls">
+            <!-- Timeline Tracking Panel -->
+            <div class="turn-tracker">
+                <span class="turn-label">Battle Round:</span>
+                <span id="round-display" class="turn-display">1</span>
+            </div>
+
+            <!-- Dynamic Turn Phase Display Box -->
+            <div id="phase-tracker-box" class="phase-tracker">
+                <span id="phase-display-text" class="phase-display">Awaiting Deployment...</span>
+            </div>
+
+            <!-- Independent Sci-Fi Phase Advance Button -->
+            <button class="btn-advance-phase-mega" onclick="changePhase(1)">ADVANCE PHASE →</button>
+            <!-- Main Scoreboard Layout Switcher -->
+            <div class="team-toggle-box" style="display: inline-flex; align-items: center; gap: 8px; background: rgba(0, 0, 0, 0.4); padding: 6px 12px; border-radius: 4px; border: 1px solid var(--panel-border); margin-right: 10px;">
+                <span style="font-size: 0.75rem; text-transform: uppercase; letter-spacing: 1px; color: var(--text-muted); font-weight: bold;">Score Format:</span>
+                <label class="switch" style="position: relative; display: inline-block; width: 40px; height: 20px;">
+                    <input type="checkbox" id="teams-toggle-checkbox" checked onchange="toggleTeamMode(this.checked)" style="opacity: 0; width: 0; height: 0;">
+                    <span class="slider" style="position: absolute; cursor: pointer; top: 0; left: 0; right: 0; bottom: 0; background-color: #b83232; transition: .3s; border-radius: 20px;"></span>
+                </label>
+                <span id="team-toggle-label" style="font-size: 0.8rem; font-weight: 800; color: #00f0ff;">Teams Active</span>
+            </div>
+
+            <!-- 🌟 NEW: Dynamic Team Scaler Shelf (Shows up inline alongside toggle) -->
+            <div id="team-scaler-controls" style="display: inline-flex; align-items: center; gap: 6px; background: rgba(0, 0, 0, 0.2); padding: 4px 8px; border-radius: 4px; border: 1px dashed var(--panel-border);">
+                <button onclick="adjustTeamCount(1)" style="background: rgba(0, 240, 255, 0.1); border: 1px solid #00f0ff; color: #00f0ff; font-size: 0.7rem; padding: 4px 8px; font-weight: bold; cursor: pointer;">+ Add Team</button>
+                <button onclick="adjustTeamCount(-1)" style="background: rgba(184, 50, 50, 0.1); border: 1px solid #ff5555; color: #ff5555; font-size: 0.7rem; padding: 4px 8px; font-weight: bold; cursor: pointer;">- Remove Team</button>
+            </div>
+
+            <!-- 🌟 HTML TARGET ELEMENT: Place this empty div inside your header metrics grid area -->
+            <div id="dynamic-team-hud-container" style="display: flex; gap: 10px; flex-wrap: wrap; margin-top: 10px; justify-content: center; width: 100%;"></div>
+
+        </div>
+
+        <!-- 🌟 UPDATED: Action row now houses the Add Player utility down at the bottom of the header panel -->
+        <div class="header-action-row">
+            <button id="btn-add-player" class="btn-add-strat pre-match-controls" onclick="addNewPlayerProfile()">
+                ➕ ADD PLAYER
+            </button>
+            <button class="btn-launch btn-end-trigger" onclick="triggerEndMatch()">End Match</button>
+            <button class="btn-reset" onclick="resetMatch()">Reset Match</button>
+        </div>
+    </header>
+
+    <main class="workspace-stack">
+        <!-- The Dynamic Scoreboard Card Containment Grid -->
+        <div id="match-main-grid" class="scoreboard-container pre-match"></div>
+
+        <!-- Pre-Match Strategy Setup Center Bar Container -->
+        <div id="start-match-overlay">
+            <div class="start-box">
+                <h2>Prepare For Battle</h2>
+                <p>Configure player details above, then deploy forces to activate scoring controls.</p>
+                <button class="btn-launch" onclick="launchMatch()">Deploy Forces</button>
+            </div>
+        </div>
+
+        <!-- Chronological Tactical Match Ticker Feed Engine -->
+        <div class="log-container">
+            <div class="log-header">
+                <h3>Tactical Match Feed</h3>
+                <button class="btn-clear-log" onclick="clearLogFeed()">Clear Feed</button>
+            </div>
+            <div id="log-ticker-feed" class="log-feed-body"></div>
+        </div>
+    </main>
+
+    <!-- Cinematic End-Game Leaderboard Screen Overlay Panel -->
+    <div id="victory-banner-overlay" style="display: none;">
+        <div class="victory-box">
+            <h2 id="victory-headline">Conflict Drawn</h2>
+            <div class="victory-stats">
+                <p id="winner-score-summary">The war has concluded in a tactical tie!</p>
+            </div>
+            <button class="btn-launch" onclick="closeVictoryBanner()">Return to Dashboard</button>
+        </div>
+    </div>
+
+    <footer>
+        <p>© WH40k Scoreboard Tracker — Fully Scaleable Architecture</p>
+    </footer>
+
+    <script src="script.js"></script>
+</body>
+</html>
+ 

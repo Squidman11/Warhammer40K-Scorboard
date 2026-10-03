@@ -1,0 +1,554 @@
+/* =========================================================================
+   UNIVERSAL ROOT & RESET CONFIGURATIONS
+   ========================================================================= */
+:root {
+    --bg-dark: #0f1115;
+    --panel-bg: #1a1d24;
+    --panel-border: #3a3f4d;
+    --accent-gold: #c59b27;
+    --text-light: #e2e8f0;
+    --text-muted: #94a3b8;
+    --cyber-cyan: #00f0ff;
+}
+
+* {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+}
+
+body {
+    /* 1. The solid background color now reads your active faction variable natively */
+    background-color: var(--active-faction-color, #2d7dd2);
+    color: var(--text-light);
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding: 20px;
+    position: relative;
+    z-index: 1;
+    
+    /* 2. Hardware-accelerated color transition morphs the whole page smoothly in real-time! */
+    transition: background-color 0.8s cubic-bezier(0.25, 0.8, 0.25, 1);
+}
+
+/* The Matte Sci-Fi Vignette Mask Layer */
+body::before {
+    content: "";
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    
+    /* 3. This dark mask overlay stays static, letting the active color bleed through the top center */
+    background-image: 
+        linear-gradient(rgba(15, 17, 21, 0.5), rgba(15, 17, 21, 0.98)), 
+        radial-gradient(circle at top, transparent 0%, #0f1115 75%);
+        
+    z-index: -1; /* Keeps the overlay securely locked beneath your scoreboards and text */
+    pointer-events: none;
+}
+
+/* =========================================================================
+   HEADER & TIMELINE GRID MECHANICS
+   ========================================================================= */
+header {
+    text-align: center;
+    margin-bottom: 30px;
+    border-bottom: 2px solid var(--accent-gold);
+    padding-bottom: 20px;
+    width: 100%;
+    max-width: 1200px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 15px;
+}
+
+header h1 {
+    font-size: 2.5rem;
+    text-transform: uppercase;
+    letter-spacing: 3px;
+    color: var(--accent-gold);
+    text-shadow: 0 0 10px rgba(197, 155, 39, 0.3);
+}
+
+.header-controls {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 20px;
+    flex-wrap: wrap;
+    width: 100%;
+}
+
+.turn-tracker, .phase-tracker {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 15px;
+    background: rgba(0, 0, 0, 0.4);
+    padding: 12px 24px;
+    border-radius: 4px;
+    border: 1px solid var(--panel-border);
+}
+
+.phase-tracker {
+    border-left: 4px solid var(--accent-gold);
+    transition: border-left-color 0.3s ease;
+}
+
+.phase-display {
+    font-weight: bold;
+    letter-spacing: 1px;
+    text-transform: uppercase;
+    text-align: center;
+    min-width: 280px; 
+    max-width: 280px;
+    display: inline-block;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.turn-label {
+    font-size: 0.9rem;
+    text-transform: uppercase;
+    letter-spacing: 2px;
+    color: var(--text-muted);
+}
+
+.turn-display {
+    font-size: 1.8rem;
+    font-weight: bold;
+    color: var(--accent-gold);
+    min-width: 30px;
+    text-align: center;
+}
+
+/* 🌟 EXTRACTED ADVANCE PHASE TURN TRIGGER BUTTON BUTTON STYLES
+   Repositioned outside the dashboard cards as an independent high-visibility action element */
+/* =========================================================================
+   🌟 EXTRACTED SCI-FI CONTROLS & DYNAMIC AMBIENT SYSTEM ACCENTS
+   ========================================================================= */
+
+/* The Unified Hardware-Accelerated Ambient Mask */
+body {
+    background-color: var(--bg-dark);
+    /* Paints the radial vignette glow dynamically using the variable handled by script.js turn sequences */
+    background-image: 
+        linear-gradient(rgba(15, 17, 21, 0.45), rgba(15, 17, 21, 0.98)), 
+        radial-gradient(circle at top, var(--active-faction-color, #2d7dd2) 0%, #0f1115 70%);
+    background-attachment: fixed;
+    color: var(--text-light);
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding: 20px;
+    transition: background-color 0.5s ease-in-out;
+}
+
+/* Independent Sci-Fi HUD Command Button */
+.btn-advance-phase-mega {
+    background: rgba(10, 15, 25, 0.85) !important;
+    color: #00f0ff !important;
+    border: 2px solid #00f0ff !important;
+    box-shadow: 0 0 10px rgba(0, 240, 255, 0.15);
+    text-transform: uppercase;
+    letter-spacing: 2px;
+    font-size: 0.9rem;
+    font-weight: 800;
+    padding: 0 25px;
+    height: 48px;
+    border-radius: 4px;
+    cursor: pointer;
+    transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.btn-advance-phase-mega:hover { 
+    background: #00f0ff !important; 
+    color: #0f1115 !important; 
+    box-shadow: 0 0 20px rgba(0, 240, 255, 0.5); 
+    transform: translateY(-1px); 
+}
+
+/* Polished Minimalist Add Player Layout */
+#btn-add-player {
+    background-color: transparent !important;
+    color: var(--text-light) !important;
+    border: 1px dashed var(--panel-border) !important;
+    font-size: 0.85rem;
+    letter-spacing: 1px;
+    padding: 0 20px;
+    height: 38px; /* Sized beautifully next to End/Reset actions */
+    border-radius: 4px;
+    transition: all 0.2s ease;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+}
+
+#btn-add-player:hover { 
+    border-color: var(--accent-gold) !important; 
+    color: var(--accent-gold) !important; 
+    background: rgba(197, 155, 39, 0.05) !important; 
+}
+
+/* State visibility overrides to clean up pre-match dashboard drafting */
+body:has(#match-main-grid.pre-match) .btn-end-trigger,
+body:has(#match-main-grid.pre-match) .btn-advance-phase-mega,
+body:has(#match-main-grid.pre-match) .turn-tracker,
+body:has(#match-main-grid.pre-match) .phase-tracker { 
+    opacity: 0.35; 
+    pointer-events: none; 
+}
+
+body:not(:has(#match-main-grid.pre-match)) .pre-match-controls { 
+    display: none !important; 
+}
+
+
+.btn-advance-phase-mega:active {
+    transform: translateY(1px);
+    box-shadow: 0 2px 8px rgba(197, 155, 39, 0.4);
+}
+
+/* Administrative Action Intersect Row Layout */
+.header-action-row {
+    display: flex;
+    gap: 15px;
+    justify-content: center;
+    width: 100%;
+    margin-top: 5px;
+}
+
+.btn-reset {
+    background-color: #b83232;
+    color: #fff;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    font-size: 0.85rem;
+    padding: 10px 20px;
+    font-weight: bold;
+    border-radius: 4px;
+}
+
+.btn-reset:hover { background-color: #df4444; color: #fff; }
+
+.btn-edit-profile {
+    font-size: 0.75rem;
+    padding: 4px 10px;
+    background-color: var(--panel-border);
+}
+
+/* Hide control groups natively depending on active configuration steps */
+body:has(#match-main-grid.pre-match) .btn-end-trigger,
+body:has(#match-main-grid.pre-match) .btn-advance-phase-mega {
+    display: none !important;
+}
+
+/* =========================================================================
+   SCOREBOARD CONTAINMENT CONTAINER GRID
+   ========================================================================= */
+.scoreboard-container {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(340px, 1fr));
+    gap: 20px;
+    width: 100%;
+    max-width: 1200px;
+}
+
+.player-card {
+    --faction-accent: var(--accent-gold);
+    background-color: var(--panel-bg);
+    border: 1px solid var(--panel-border);
+    border-top: 4px solid var(--faction-accent);
+    border-radius: 4px;
+    padding: 25px;
+    box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.5);
+    display: flex;
+    flex-direction: column;
+    transition: border-top-color 0.4s ease;
+}
+
+.player-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    border-bottom: 1px solid var(--panel-border);
+    padding-bottom: 15px;
+    margin-bottom: 20px;
+    gap: 15px;
+}
+
+.player-header-text { flex-grow: 1; }
+.player-name { font-size: 1.5rem; font-weight: bold; letter-spacing: 1px; text-transform: capitalize; }
+.faction-name { font-size: 0.85rem; color: var(--text-muted); text-transform: uppercase; }
+.counter-group { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; margin-bottom: 25px; }
+
+.counter-box {
+    background-color: rgba(0, 0, 0, 0.2);
+    border: 1px solid var(--panel-border);
+    border-radius: 4px;
+    padding: 15px;
+    text-align: center;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+}
+
+.counter-label {
+    font-size: 0.8rem;
+    text-transform: uppercase;
+    color: var(--text-muted);
+    letter-spacing: 1px;
+    margin-bottom: 5px;
+}
+
+.counter-value {
+    font-size: 3rem;
+    font-weight: bold;
+    color: #fff;
+    margin: 5px 0 15px 0;
+    line-height: 1;
+}
+
+.btn-group { display: flex; justify-content: center; gap: 10px; margin-top: auto; }
+
+button {
+    background-color: var(--panel-border);
+    color: var(--text-light);
+    border: none;
+    padding: 8px 16px;
+    font-size: 1rem;
+    font-weight: bold;
+    border-radius: 4px;
+    cursor: pointer;
+    transition: all 0.2s ease;
+}
+
+button:hover { background-color: var(--faction-accent); color: var(--bg-dark); }
+
+/* =========================================================================
+   OBJECTIVES & STRATAGEM SPEND PANELS
+   ========================================================================= */
+.objectives-section { border-top: 1px solid var(--panel-border); padding-top: 20px; margin-top: auto; }
+.objectives-section h3 { font-size: 1rem; text-transform: uppercase; color: var(--faction-accent); margin-bottom: 15px; letter-spacing: 1px; transition: color 0.4s ease; }
+.objective-row { display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px; font-size: 0.95rem; }
+.objective-name { color: var(--text-light); }
+.objective-input { background-color: rgba(0, 0, 0, 0.3); border: 1px solid var(--panel-border); color: #fff; padding: 5px; width: 60px; text-align: center; border-radius: 4px; font-size: 1rem; }
+.objective-input:focus { outline: none; border-color: var(--faction-accent); }
+
+.profile-select-faction { font-size: 0.85rem; background: #000; color: var(--text-light); border: 1px solid var(--panel-border); padding: 6px; width: 100%; margin-top: 6px; border-radius: 4px; cursor: pointer; }
+
+.secondary-mode-toggle {
+    display: flex;
+    gap: 5px;
+    margin-bottom: 15px;
+    background: rgba(0, 0, 0, 0.4);
+    padding: 3px;
+    border-radius: 4px;
+    border: 1px solid var(--panel-border);
+}
+
+.mode-btn {
+    flex: 1;
+    font-size: 0.75rem;
+    padding: 6px;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    background: transparent;
+    color: var(--text-muted);
+}
+
+.mode-btn.active { background: var(--faction-accent); color: var(--bg-dark); }
+
+.tactical-deck-ui {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    background: rgba(0, 0, 0, 0.3);
+    padding: 10px;
+    border-radius: 4px;
+    border: 1px dashed var(--panel-border);
+}
+
+.tactical-card-row {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    background: var(--bg-dark);
+    padding: 8px;
+    border-radius: 4px;
+    border-left: 3px solid var(--faction-accent);
+    font-size: 0.85rem;
+}
+
+.btn-card-control { font-size: 0.7rem; padding: 4px 8px; background: #b83232; }
+.btn-card-control.draw { background: var(--panel-border); width: 100%; padding: 8px; text-transform: uppercase; }
+
+.stratagem-section { border-top: 1px dashed var(--panel-border); padding-top: 15px; margin-top: 15px; }
+.stratagem-section h4 { font-size: 0.8rem; text-transform: uppercase; color: var(--text-muted); letter-spacing: 1px; margin-bottom: 10px; }
+.stratagem-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(135px, 1fr)); gap: 8px; }
+
+.btn-strat {
+    position: relative;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    background: rgba(20, 24, 33, 0.65) !important;
+    backdrop-filter: blur(8px);
+    border: 1px solid var(--panel-border) !important;
+    border-left: 4px solid var(--faction-accent) !important;
+    border-radius: 4px;
+    padding: 8px 12px;
+    gap: 8px;
+    width: 100%;
+    color: var(--text-light) !important;
+    transition: all 0.25s ease;
+}
+
+.btn-strat:hover { background: rgba(30, 37, 51, 0.85) !important; border-color: var(--faction-accent) !important; transform: translateY(-1px); }
+.btn-strat > span:first-child { display: flex; justify-content: space-between; align-items: center; flex-grow: 1; font-size: 0.82rem; font-weight: 600; cursor: pointer; height: 100%; }
+.strat-cost { background: rgba(255, 255, 255, 0.07); border: 1px solid rgba(255, 255, 255, 0.15); color: var(--accent-gold); padding: 2px 6px; border-radius: 4px; font-weight: 700; font-size: 0.72rem; margin-left: 6px; }
+.btn-strat:hover .strat-cost { color: #fff; background: var(--faction-accent); border-color: transparent; }
+
+.btn-strat-delete { background: rgba(0, 0, 0, 0.25) !important; color: var(--text-muted) !important; font-size: 0.7rem; width: 20px; height: 20px; display: flex; align-items: center; justify-content: center; border-radius: 3px; padding: 0 !important; }
+.btn-strat-delete:hover { background: #b83232 !important; color: #fff !important; }
+
+.stratagem-creator-form { display: flex; gap: 6px; margin-top: 12px; background: rgba(0, 0, 0, 0.2); padding: 6px; border-radius: 4px; border: 1px dashed var(--panel-border); }
+.strat-input-text { flex-grow: 1; background: #000; border: 1px solid var(--panel-border); color: var(--text-light); font-size: 0.75rem; padding: 4px 8px; border-radius: 3px; text-transform: capitalize; }
+.strat-select-cost { background: #000; border: 1px solid var(--panel-border); color: var(--text-light); font-size: 0.75rem; padding: 4px; border-radius: 3px; cursor: pointer; }
+.btn-add-strat { background-color: var(--panel-border); color: var(--text-light); font-size: 0.75rem; padding: 4px 10px; font-weight: bold; }
+.btn-add-strat:hover { background-color: var(--faction-accent); color: var(--bg-dark); }
+
+/* =========================================================================
+   WORKSPACE STACK & MATCH OVERLAYS
+   ========================================================================= */
+.workspace-stack {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    width: 100%;
+    max-width: 1200px;
+    gap: 25px;
+}
+
+#start-match-overlay {
+    width: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 10;
+}
+
+.start-box { background-color: var(--panel-bg); border: 2px solid var(--accent-gold); border-radius: 4px; padding: 25px 40px; text-align: center; width: 100%; box-shadow: 0 0 20px rgba(197, 155, 39, 0.15); }
+.start-box h2 { text-transform: uppercase; color: var(--accent-gold); letter-spacing: 2px; font-size: 1.4rem; margin-bottom: 6px; }
+.start-box p { color: var(--text-muted); font-size: 0.9rem; margin-bottom: 15px; }
+
+.btn-launch { background-color: var(--accent-gold); color: var(--bg-dark); font-size: 1rem; padding: 10px 25px; text-transform: uppercase; letter-spacing: 1px; font-weight: bold; }
+.btn-launch:hover { background-color: #e2b33c; box-shadow: 0 0 15px rgba(197, 155, 39, 0.4); }
+
+.scoreboard-container.pre-match .counter-group,
+.scoreboard-container.pre-match .objectives-section { display: none !important; }
+.scoreboard-container.pre-match .player-card { border-bottom: 2px solid var(--panel-border); justify-content: center; min-height: auto; }
+
+/* Turn Highlighting Filters */
+.player-card.active-turn { box-shadow: 0 0 20px 2px var(--faction-accent); transform: scale(1.01); transition: all 0.4s ease; }
+.player-card.inactive-turn { opacity: 0.85; transition: all 0.4s ease; }
+.scoreboard-container.pre-match .player-card { opacity: 1 !important; transform: none !important; box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.5) !important; }
+
+/* =========================================================================
+   MATCH LOG TICKER PANELS
+   ========================================================================= */
+.log-container { background-color: var(--panel-bg); border: 1px solid var(--panel-border); border-top: 3px solid var(--accent-gold); border-radius: 4px; padding: 20px; width: 100%; box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.5); }
+.log-header { display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid var(--panel-border); padding-bottom: 10px; margin-bottom: 12px; }
+.log-header h3 { font-size: 0.95rem; text-transform: uppercase; letter-spacing: 2px; color: var(--accent-gold); }
+.btn-clear-log { font-size: 0.75rem; padding: 4px 10px; background-color: rgba(0, 0, 0, 0.3); color: var(--text-muted); border: 1px solid var(--panel-border); }
+.log-feed-body { max-height: 160px; overflow-y: auto; display: flex; flex-direction: column; gap: 6px; padding-right: 5px; }
+.log-entry-row { font-family: 'Courier New', Courier, monospace; font-size: 0.85rem; line-height: 1.4; color: var(--text-light); display: flex; gap: 12px; }
+.log-timestamp { color: var(--accent-gold); flex-shrink: 0; user-select: none; }
+
+#victory-banner-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background-color: rgba(15, 17, 21, 0.96); display: flex; align-items: center; justify-content: center; z-index: 10000; }
+.victory-box { background-color: var(--panel-bg); border: 3px double var(--accent-gold); border-radius: 4px; padding: 30px 40px; text-align: center; max-width: 600px; width: 90%; box-shadow: 0 0 35px rgba(197, 155, 39, 0.3); }
+.victory-box h2 { text-transform: uppercase; font-size: 2.2rem; color: var(--accent-gold); letter-spacing: 3px; margin-bottom: 20px; }
+#winner-score-summary { white-space: pre-line; line-height: 1.6; font-size: 1.2rem; font-family: 'Courier New', Courier, monospace; margin-bottom: 30px; text-align: left; padding-left: 20px; }
+
+footer { margin-top: auto; padding: 40px 0 20px 0; color: var(--text-muted); font-size: 0.8rem; text-align: center; }
+/* 🌟 MODIFIED: Replaces split layout variables with a single reactive gradient */
+/* 🌟 MODIFIED: Custom independent translucent HUD command button profiles */
+
+/* 🌟 MODIFIED: Dashed minimal frame parameters that auto-hide post-deployment */
+#btn-add-player {
+    background-color: transparent !important;
+    color: var(--text-light) !important;
+    border: 1px dashed var(--panel-border) !important;
+    font-size: 0.85rem;
+    letter-spacing: 1px;
+    padding: 0 16px;
+    height: 48px;
+    border-radius: 4px;
+    transition: all 0.2s ease;
+}
+#btn-add-player:hover { 
+    border-color: var(--accent-gold) !important; 
+    color: var(--accent-gold) !important; 
+    background: rgba(197, 155, 39, 0.05) !important; 
+}
+/* =========================================================================
+   🌟 NEW: COMBATANT REMOVAL ASSET OVERRIDES
+   ========================================================================= */
+.btn-remove-player {
+    background-color: rgba(184, 50, 50, 0.1) !important;
+    border: 1px solid rgba(184, 50, 50, 0.3) !important;
+    color: #ff5555 !important;
+    font-size: 0.8rem !important;
+    padding: 4px 8px !important;
+    border-radius: 4px;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.btn-remove-player:hover {
+    background-color: #b83232 !important;
+    border-color: #df4444 !important;
+    color: #ffffff !important;
+    box-shadow: 0 0 10px rgba(184, 50, 50, 0.4);
+}
+/* Smooth sliding layout animation styles for the switch slider node */
+            .switch input:checked + .slider { background-color: #15803d; }
+            .switch .slider:before {
+                position: absolute; content: ""; height: 14px; width: 14px; left: 3px; bottom: 3px;
+                background-color: white; transition: .3s; border-radius: 50%;
+            }
+            .switch input:checked + .slider:before { transform: translateX(20px); }
+/* =========================================================================
+   📱 RESPONSIVE MOBILE ADAPTATION LAYER
+   ========================================================================= */
+@media (max-width: 768px) {
+    /* 1. Stacks the player cards vertically on small phone displays */
+    #match-main-grid {
+        grid-template-columns: 1fr !important;
+    }
+
+    /* 2. Resizes the massive VP/CP number displays so buttons fit side-by-side */
+    .counter-value {
+        font-size: 2.2rem !important;
+    }
+
+    /* 3. Helper to stop layout squishing on small screens */
+    .counter-group {
+        grid-template-columns: 1fr !important;
+        gap: 10px;
+    }
+}
