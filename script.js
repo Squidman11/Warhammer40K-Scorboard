@@ -8,8 +8,9 @@ let activePlayerIndex = 0;    // Tracks array index position of player whose tur
 
 let players = [];             // Dynamic array collection holding active player schemas
 let playerActiveCards = {};   // Dynamic lookup dictionary for tactical card hands
-// Add this under your other global state variables in Section 1
-let teamsEnabled = true; // Set to true for Team Alpha vs Beta, or false for Free-For-All
+
+// 🛑 CHANGE THIS FROM TRUE TO FALSE:
+let teamsEnabled = false; // Set to true for Team Alpha vs Beta, or false for Free-For-All
 let currentTeams = ["team_a", "team_b"]; 
 
 // A color-coded registry to give your custom teams distinct sci-fi themes
@@ -1357,7 +1358,13 @@ window.addEventListener('DOMContentLoaded', () => {
     } else {
         updateTeamScoreHUD();
     }
+    const checkboxElement = document.getElementById('teams-toggle-checkbox');
+    if (checkboxElement) {
+        checkboxElement.checked = teamsEnabled; // Sync checkbox position to your variable
+        toggleTeamMode(teamsEnabled);          // Force layout rules to process cleanly
+    }
+
     if ('serviceWorker' in navigator) {
-    navigator.serviceWorker.register('sw.js');
+        navigator.serviceWorker.register('sw.js');
     }
 });
