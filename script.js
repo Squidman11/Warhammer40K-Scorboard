@@ -8,6 +8,13 @@ let activePlayerIndex = 0;    // Tracks array index position of player whose tur
 
 let players = [];             // Dynamic array collection holding active player schemas
 let playerActiveCards = {};   // Dynamic lookup dictionary for tactical card hands
+let audioContext = null;
+let audioMasterGain = null;
+let ambientMusicNodes = [];
+let ambientMusicGain = null;
+let ambientMusicFilter = null;
+let ambientMusicTimer = null;
+let soundEffectsEnabled = localStorage.getItem('wh40k_sound_effects') !== 'off';
 
 // 🛑 CHANGE THIS FROM TRUE TO FALSE:
 let teamsEnabled = false; // Set to true for Team Alpha vs Beta, or false for Free-For-All
@@ -30,6 +37,152 @@ const turnPhases = [
     { name: "Charge Phase", color: "#e25c4a" },
     { name: "Fight Phase", color: "#b83232" }
 ];
+
+function getAudioContext() {
+    if (!window.AudioContext) {
+        setAudioStatus('Audio is not supported in this browser.');
+        return null;
+    }
+
+    if (!audioContext) {
+        try {
+            audioContext = new AudioContext();
+        } catch {
+            setAudioStatus('Could not start audio in this browser.');
+            return null;
+        }
+        audioMasterGain = audioContext.createGain();
+        audioMasterGain.gain.value = 0.55;
+        audioMasterGain.connect(audioContext.destination);
+    }
+
+    if (audioContext.state === 'suspended') {
+        audioContext.resume().catch(() => {
+            setAudioStatus('Could not start audio. Try clicking again.');
+        });
+    }
+    return audioContext;
+}
+
+function setAudioStatus(message) {
+    const status = document.getElementById('audio-status');
+    if (status) status.textContent = message;
+}
+
+function playButtonSound() {
+    if (!soundEffectsEnabled) return;
+
+    const context = getAudioContext();
+    if (!context || !audioMasterGain) return;
+
+    const oscillator = context.createOscillator();
+    const volume = context.createGain();
+    const now = context.currentTime;
+
+    oscillator.type = 'sine';
+    oscillator.frequency.setValueAtTime(185, now);
+    oscillator.frequency.exponentialRampToValueAtTime(115, now + 0.055);
+    volume.gain.setValueAtTime(0.0001, now);
+    volume.gain.exponentialRampToValueAtTime(0.065, now + 0.006);
+    volume.gain.exponentialRampToValueAtTime(0.0001, now + 0.07);
+    oscillator.connect(volume);
+    volume.connect(audioMasterGain);
+    oscillator.start(now);
+    oscillator.stop(now + 0.08);
+}
+
+function updateAudioControls() {
+    const soundButton = document.getElementById('sound-effects-toggle');
+    const musicButton = document.getElementById('background-music-toggle');
+    if (soundButton) {
+        soundButton.textContent = `Sound FX: ${soundEffectsEnabled ? 'On' : 'Off'}`;
+        soundButton.setAttribute('aria-pressed', String(soundEffectsEnabled));
+    }
+    if (musicButton) {
+        const musicEnabled = ambientMusicNodes.length > 0;
+        musicButton.textContent = `Music: ${musicEnabled ? 'On' : 'Off'}`;
+        musicButton.setAttribute('aria-pressed', String(musicEnabled));
+    }
+}
+
+function toggleSoundEffects() {
+    soundEffectsEnabled = !soundEffectsEnabled;
+    localStorage.setItem('wh40k_sound_effects', soundEffectsEnabled ? 'on' : 'off');
+    updateAudioControls();
+    setAudioStatus('');
+}
+
+function toggleBackgroundMusic() {
+    if (ambientMusicNodes.length > 0) {
+        ambientMusicNodes.forEach(node => {
+            node.stop();
+            node.disconnect();
+        });
+        window.clearInterval(ambientMusicTimer);
+        ambientMusicTimer = null;
+        if (ambientMusicGain) ambientMusicGain.disconnect();
+        if (ambientMusicFilter) ambientMusicFilter.disconnect();
+        ambientMusicNodes = [];
+        ambientMusicGain = null;
+        ambientMusicFilter = null;
+        updateAudioControls();
+        setAudioStatus('');
+        return;
+    }
+
+    const context = getAudioContext();
+    if (!context || !audioMasterGain) return;
+
+    const filter = context.createBiquadFilter();
+    filter.type = 'lowpass';
+    filter.frequency.value = 320;
+    filter.Q.value = 0.45;
+    filter.connect(audioMasterGain);
+    ambientMusicFilter = filter;
+
+    ambientMusicGain = context.createGain();
+    ambientMusicGain.gain.value = 0.045;
+    ambientMusicGain.connect(filter);
+
+    const notes = [
+        [65.41, 98, 130.81],
+        [58.27, 87.31, 116.54],
+        [73.42, 110, 146.83],
+        [65.41, 98, 123.47]
+    ];
+    const oscillators = notes[0].map((frequency, index) => {
+        const oscillator = context.createOscillator();
+        const noteGain = context.createGain();
+        oscillator.type = index === 1 ? 'triangle' : 'sine';
+        oscillator.frequency.value = frequency;
+        noteGain.gain.value = [0.28, 0.09, 0.025][index];
+        oscillator.connect(noteGain);
+        noteGain.connect(ambientMusicGain);
+        oscillator.start();
+        ambientMusicNodes.push(oscillator);
+        return oscillator;
+    });
+
+    let chordIndex = 0;
+    ambientMusicTimer = window.setInterval(() => {
+        chordIndex = (chordIndex + 1) % notes.length;
+        const now = context.currentTime;
+        oscillators.forEach((oscillator, index) => {
+            oscillator.frequency.setTargetAtTime(notes[chordIndex][index], now, 3);
+        });
+    }, 12000);
+
+    const filterLfo = context.createOscillator();
+    const filterLfoDepth = context.createGain();
+    filterLfo.frequency.value = 0.025;
+    filterLfoDepth.gain.value = 100;
+    filterLfo.connect(filterLfoDepth);
+    filterLfoDepth.connect(filter.frequency);
+    filterLfo.start();
+    ambientMusicNodes.push(filterLfo);
+    updateAudioControls();
+    setAudioStatus('');
+}
 
 const factionRegistry = {
     marines: { name: "Space Marines", color: "#2d7dd2" },
@@ -1279,6 +1432,14 @@ function rebuildTeamHUDLayout() {
 
 
 window.addEventListener('DOMContentLoaded', () => {
+    document.addEventListener('click', event => {
+        if (event.target instanceof Element && event.target.closest('button') &&
+            !event.target.closest('.audio-controls')) {
+            playButtonSound();
+        }
+    }, true);
+    updateAudioControls();
+
     // 1. Programmatically inject hover effects and sci-fi transitions...
     if (!document.getElementById('dice-roller-styles')) {
         const styleSheet = document.createElement('style');

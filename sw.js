@@ -2,7 +2,7 @@ self.addEventListener('fetch', (event) => {
     // This can be empty for now just to pass installation requirements
     event.respondWith(fetch(event.request));
 });
-const CACHE_NAME = 'wh40k-tracker-v1';
+const CACHE_NAME = 'wh40k-tracker-v2';
 const ASSETS_TO_CACHE = [
   'index.html',
   'script.js', // Make sure this matches your actual JS file name

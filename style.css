@@ -114,6 +114,32 @@ header h1 {
     text-overflow: ellipsis;
 }
 
+.audio-controls {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    flex-wrap: wrap;
+}
+
+.audio-toggle {
+    background: rgba(0, 0, 0, 0.4);
+    border: 1px solid var(--panel-border);
+    color: var(--text-muted);
+    font-size: 0.75rem;
+    padding: 8px 10px;
+}
+
+.audio-toggle[aria-pressed="true"] {
+    border-color: var(--cyber-cyan);
+    color: var(--cyber-cyan);
+}
+
+.audio-status {
+    color: var(--text-muted);
+    font-size: 0.75rem;
+}
+
 .turn-label {
     font-size: 0.9rem;
     text-transform: uppercase;

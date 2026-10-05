@@ -26,6 +26,11 @@
 
             <!-- Independent Sci-Fi Phase Advance Button -->
             <button class="btn-advance-phase-mega" onclick="changePhase(1)">ADVANCE PHASE →</button>
+            <div class="audio-controls" aria-label="Audio settings">
+                <button id="sound-effects-toggle" class="audio-toggle" type="button" aria-pressed="true" onclick="toggleSoundEffects()">Sound FX: On</button>
+                <button id="background-music-toggle" class="audio-toggle" type="button" aria-pressed="false" onclick="toggleBackgroundMusic()">Music: Off</button>
+                <span id="audio-status" class="audio-status" aria-live="polite"></span>
+            </div>
             <!-- Main Scoreboard Layout Switcher -->
             <div class="team-toggle-box" style="display: inline-flex; align-items: center; gap: 8px; background: rgba(0, 0, 0, 0.4); padding: 6px 12px; border-radius: 4px; border: 1px solid var(--panel-border); margin-right: 10px;">
                 <span style="font-size: 0.75rem; text-transform: uppercase; letter-spacing: 1px; color: var(--text-muted); font-weight: bold;">Score Format:</span>
