@@ -46,7 +46,7 @@ const factionRegistry = {
     agents: { name: "Imperial Agents", color: "#475569" },
     chaos: { name: "Chaos Space Marines", color: "#ff3300" },
     deathguard: { name: "Death Guard", color: "#606c38" },
-    thousandsons: { name: "Thousand Sons", color: "#0284c7" },
+    thousandsons: { name: "Thousand Sons", color: "#5ac2f7" },
     worldeaters: { name: "World Eaters", color: "#991b1b" },
     daemons: { name: "Chaos Daemons", color: "#dc2626" },
     chaosknights: { name: "Chaos Knights", color: "#450a0a" },
