@@ -258,6 +258,16 @@ function renderAllPlayerCards() {
             </div>
         `;
         mainGrid.appendChild(card);
+        // Add an event listener to the custom stratagem name input for the Enter key
+        const stratInput = document.getElementById(`p${player.id}-new-strat-name`);
+        if (stratInput) {
+            stratInput.addEventListener('keydown', function(event) {
+                if (event.key === 'Enter') {
+                    event.preventDefault(); // Stop form submission/page refresh side-effects
+                    createCustomStratagem(player.id); // Run your custom stratagem engine code
+                }
+            });
+        }
         renderTacticalCards(player.id);
     });
 }
@@ -370,6 +380,7 @@ function editPlayerProfile(playerNumber) {
             </select>
         ` : '';
 
+        // Inject HTML strings natively into the profile elements
         nameEl.innerHTML = `
             <input type="text" class="profile-input-name" value="${currentName}" style="font-size:1.1rem; background:#000; color:#fff; border:1px solid var(--panel-border); padding:2px; width:100%;">
             ${teamSelectHtml}
@@ -414,6 +425,20 @@ function editPlayerProfile(playerNumber) {
         factionEl.innerHTML = `<select class="profile-select-faction">${selectOptions}</select>`;
         editBtn.innerText = "SAVE";
         editBtn.style.backgroundColor = "#2d7dd2";
+
+        const nameInput = nameEl.querySelector('.profile-input-name');
+        if (nameInput) {
+            nameInput.focus();
+            nameInput.select();
+
+            nameInput.addEventListener('keydown', function(event) {
+                if (event.key === 'Enter') {
+                    event.preventDefault();
+                    editPlayerProfile(playerNumber);
+                }
+            });
+        }
+
     } else {
         const selectBox = card.querySelector('.profile-select-faction');
         const selectNameBox = card.querySelector('.profile-input-name');
@@ -439,6 +464,7 @@ function editPlayerProfile(playerNumber) {
         updateTeamScoreHUD();
     }
 }
+
 
 
 
