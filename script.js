@@ -877,19 +877,49 @@ function createCustomStratagem(playerNum) {
     const grid = card.querySelector('.stratagem-grid');
     if (!grid) return;
 
-    const newButton = document.createElement('button');
-    newButton.className = 'btn-strat';
-    const sanitizedName = stratName.replace(/'/g, "\\'");
-    newButton.innerHTML = `
-        <span onclick="event.stopPropagation(); spendStratagem(${playerNum}, "${sanitizedName}", ${cpCost})">
-            <span>${stratName}</span> <span class="strat-cost">${cpCost}CP</span>
-        </span>
-        <button class="btn-strat-delete" onclick="event.stopPropagation(); this.parentElement.remove(); saveMatchToStorage();">X</button>
-    `;
-    grid.appendChild(newButton);
+    grid.appendChild(renderCustomStratagem(playerNum, { name: stratName, cost: cpCost }));
 
     nameInput.value = "";
     saveMatchToStorage();
+}
+
+function renderCustomStratagem(playerNum, strat) {
+    const container = document.createElement('div');
+    container.className = 'custom-stratagem';
+    container.dataset.stratName = strat.name;
+    container.dataset.stratCost = String(strat.cost);
+
+    const spendButton = document.createElement('button');
+    spendButton.type = 'button';
+    spendButton.className = 'btn-strat';
+    const label = document.createElement('span');
+    label.className = 'custom-strat-label';
+
+    const name = document.createElement('span');
+    name.textContent = strat.name;
+    label.appendChild(name);
+
+    const cost = document.createElement('span');
+    cost.className = 'strat-cost';
+    cost.textContent = `${strat.cost}CP`;
+    label.appendChild(cost);
+    spendButton.appendChild(label);
+    spendButton.addEventListener('click', () => {
+        spendStratagem(playerNum, strat.name, strat.cost);
+    });
+
+    const deleteButton = document.createElement('button');
+    deleteButton.type = 'button';
+    deleteButton.className = 'btn-strat-delete';
+    deleteButton.textContent = 'X';
+    deleteButton.addEventListener('click', event => {
+        container.remove();
+        saveMatchToStorage();
+    });
+
+    container.append(spendButton, deleteButton);
+
+    return container;
 }
 
 // =========================================================================
@@ -1006,42 +1036,42 @@ function triggerEndMatch() {
 
         if (sortedTeams.length > 1 && sortedTeams[0].score === sortedTeams[1].score) {
             winnerHeadline = "Conflict Drawn";
-            summaryText = `The war has concluded in a faction deadlock tie at ${sortedTeams[0].score} VP!\\n\\n`;
+            summaryText = `The war has concluded in a faction deadlock tie at ${sortedTeams[0].score} VP!\n\n`;
         } else {
             const winningKey = sortedTeams[0].key;
             winnerHeadline = "Victory Achieved";
-            summaryText = `🏆 ${teamRegistry[winningKey].name} has triumphed! (${sortedTeams[0].score} VP)\\n\\n`;
+            summaryText = `🏆 ${teamRegistry[winningKey].name} has triumphed! (${sortedTeams[0].score} VP)\n\n`;
         }
 
-        summaryText += `Team Standings:\\n`;
+        summaryText += `Team Standings:\n`;
         sortedTeams.forEach(tObj => {
-            summaryText += `• ${teamRegistry[tObj.key].name}: ${tObj.score} VP\\n`;
+            summaryText += `• ${teamRegistry[tObj.key].name}: ${tObj.score} VP\n`;
         });
-        summaryText += `\\n`;
+        summaryText += `\n`;
     } else {
         // Free-For-All Individual Placement Calculations
         let sortedPlayers = [...players].sort((a, b) => b.vp - a.vp);
         
         if (sortedPlayers.length > 1 && sortedPlayers[0].vp === sortedPlayers[1].vp) {
             winnerHeadline = "Mutual Destruction";
-            summaryText = `The match concluded in an individual stalemate at ${sortedPlayers[0].vp} VP!\\n\\n`;
+            summaryText = `The match concluded in an individual stalemate at ${sortedPlayers[0].vp} VP!\n\n`;
         } else {
             winnerHeadline = "Grand Champion";
-            summaryText = `🏆 ${sortedPlayers[0].name} has swept the warzone! (${sortedPlayers[0].vp} VP)\\n\\n`;
+            summaryText = `🏆 ${sortedPlayers[0].name} has swept the warzone! (${sortedPlayers[0].vp} VP)\n\n`;
         }
     }
 
-    summaryText += `Individual Standings:\\n`;
+    summaryText += `Individual Standings:\n`;
     let scoreboardSorted = [...players].sort((a, b) => b.vp - a.vp);
     scoreboardSorted.forEach((p, idx) => {
         const teamLabel = teamsEnabled ? ` [${teamRegistry[p.teamId]?.name || 'Unknown'}]` : '';
-        summaryText += `  ${idx + 1}. ${p.name}${teamLabel}: ${p.vp} VP\\n`;
+        summaryText += `  ${idx + 1}. ${p.name}${teamLabel}: ${p.vp} VP\n`;
     });
 
     const banner = document.getElementById('victory-banner-overlay');
     if (banner) {
-        document.getElementById('victory-headline').innerText = winnerHeadline;
-        document.getElementById('winner-score-summary').innerText = summaryText;
+        document.getElementById('victory-headline').textContent = winnerHeadline;
+        document.getElementById('winner-score-summary').textContent = summaryText;
         banner.style.display = 'flex';
     }
     
@@ -1100,15 +1130,11 @@ function saveMatchToStorage() {
         customStratsSaved[p.id] = [];
         const card = document.getElementById(`player${p.id}`);
         if (card) {
-            const addedButtons = card.querySelectorAll('.stratagem-grid .btn-strat');
-            addedButtons.forEach(btn => {
-                const deleteBtnExists = btn.querySelector('.btn-strat-delete');
-                if (deleteBtnExists) {
-                    const name = btn.querySelector('span span')?.innerText;
-                    const costText = btn.querySelector('.strat-cost')?.innerText || "1CP";
-                    const cost = parseInt(costText) || 1;
-                    if (name) customStratsSaved[p.id].push({ name, cost });
-                }
+            const customStratagems = card.querySelectorAll('.stratagem-grid .custom-stratagem');
+            customStratagems.forEach(stratagem => {
+                const name = stratagem.dataset.stratName;
+                const cost = Number(stratagem.dataset.stratCost);
+                if (name && Number.isFinite(cost)) customStratsSaved[p.id].push({ name, cost });
             });
         }
     });
@@ -1222,16 +1248,7 @@ function loadMatchFromStorage() {
                 const grid = card?.querySelector('.stratagem-grid');
                 if (grid) {
                     data.customStratsSaved[p.id].forEach(strat => {
-                        const newButton = document.createElement('button');
-                        newButton.className = 'btn-strat';
-                        const sanitizedName = strat.name.replace(/'/g, "\\'");
-                        newButton.innerHTML = `
-                            <span onclick="event.stopPropagation(); spendStratagem(${p.id}, '${sanitizedName}', ${strat.cost})">
-                                <span>${strat.name}</span> <span class="strat-cost">${strat.cost}CP</span>
-                            </span>
-                            <button class="btn-strat-delete" onclick="event.stopPropagation(); this.parentElement.remove(); saveMatchToStorage();">X</button>
-                        `;
-                        grid.appendChild(newButton);
+                        grid.appendChild(renderCustomStratagem(p.id, strat));
                     });
                 }
             }

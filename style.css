@@ -423,6 +423,8 @@ button:hover { background-color: var(--faction-accent); color: var(--bg-dark); }
 .stratagem-section { border-top: 1px dashed var(--panel-border); padding-top: 15px; margin-top: 15px; }
 .stratagem-section h4 { font-size: 0.8rem; text-transform: uppercase; color: var(--text-muted); letter-spacing: 1px; margin-bottom: 10px; }
 .stratagem-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(135px, 1fr)); gap: 8px; }
+.custom-stratagem { position: relative; }
+.custom-stratagem .btn-strat { padding-right: 36px; cursor: pointer; }
 
 .btn-strat {
     position: relative;
@@ -447,6 +449,7 @@ button:hover { background-color: var(--faction-accent); color: var(--bg-dark); }
 .btn-strat:hover .strat-cost { color: #fff; background: var(--faction-accent); border-color: transparent; }
 
 .btn-strat-delete { background: rgba(0, 0, 0, 0.25) !important; color: var(--text-muted) !important; font-size: 0.7rem; width: 20px; height: 20px; display: flex; align-items: center; justify-content: center; border-radius: 3px; padding: 0 !important; }
+.custom-stratagem .btn-strat-delete { position: absolute; top: 50%; right: 6px; transform: translateY(-50%); }
 .btn-strat-delete:hover { background: #b83232 !important; color: #fff !important; }
 
 .stratagem-creator-form { display: flex; gap: 6px; margin-top: 12px; background: rgba(0, 0, 0, 0.2); padding: 6px; border-radius: 4px; border: 1px dashed var(--panel-border); }
